@@ -37,6 +37,7 @@ app.post('/api/book',(req,res)=>{
     })
 })
 
+
 app.put('/api/book/:id', (req, res) => {
     const id = req.params.id;
     const { title, author, genre, price } = req.body;
@@ -48,6 +49,17 @@ app.put('/api/book/:id', (req, res) => {
             res.status(404).send(`Book with id: ${id} was not found`);
         } else {
             res.status(200).json(data);
+        }
+    });
+});
+
+app.delete('/api/book/:id', (req, res) => {
+    const id = req.params.id;
+    deletebook(id, (err, deletedBook) => {
+        if (err) {
+            res.status(500).send(err.message);
+        } else {
+            res.status(200).send('Book Records Deleted');
         }
     });
 });
