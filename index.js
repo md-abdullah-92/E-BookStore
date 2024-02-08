@@ -1,14 +1,25 @@
 const express= require('express')
 
-const {addbook,deletebook,updatebook,findbook}=require('./CRUD')
+const {addbook,deletebook,updatebook,findbook,fetchallbook}=require('./CRUD')
 
 const app=express();
 
 app.use(express.json())
 
-app.get('/api/books/:id', (req, res) => {
+app.get('/api/book/:id', (req, res) => {
     const id = req.params.id; // Extracting id from the request URL
     findbook(id, (err, book) => {
+        if (err) {
+            res.status(500).send(err.message);
+        } else if (!book) {
+            res.send(`Book with id: ${id} was not found`);
+        } else {
+            res.status(200).json(book);
+        }
+    });
+});
+app.get('/api/book', (req, res) => {
+    fetchallbook((err, book) => {
         if (err) {
             res.status(500).send(err.message);
         } else if (!book) {
@@ -27,9 +38,6 @@ app.post('/api/book',(req,res)=>{
     addbook(id, title, author, genre, price,(err,data)=>{
         if(err){
             res.status(500).send(err.message)
-        }
-        else if (!book) {
-            res.status(404).send(`Book with id: ${id} was not found`);
         }
         else{
             res.status(201).json(data)
